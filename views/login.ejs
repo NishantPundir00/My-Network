@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login</title>
+    <!-- style -->
+    <link rel="stylesheet" href="/public/css/login_style.css">
+    <!-- icons -->
+    <script src="https://kit.fontawesome.com/b2c628a9e3.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <section id="login">
+        <div class="imagebx">
+            <!-- <img src="image/login_bg.jpg" alt=""> -->
+            <div class="box">
+                <p>“Social media is about sociology and psychology more than technology.” <b>--- Brian Solis, digital analyst, author, keynote speaker</b></p>
+            </div>
+        </div>
+        <div class="contentbx">
+            <div class="formbx">
+                <h2>Login</h2>
+                <form onsubmit="return doLogin(this);">
+                    <div class="inputbx">
+                        <span>Email</span> 
+                        <input type="email" required name="email" >
+                    </div>
+                    <div class="inputbx">
+                        <span>Password</span>
+                        <input type="password" required name="password" >
+                    </div>
+                    <div class="remember">
+                        <label><input type="checkbox"> Remember me</label>
+                    </div>
+                    
+                    <div class="submit-btns">
+                        <button class="login" name="submit" type="submit"><span>Login</span></button>
+                    </div>
+                   
+                    <div class="inputbx">
+                        <p>Don't have an account? <a href="/signup"> Sign up</a></p>
+                    </div>
+                </form>
+                <h3>Login with social media</h3>
+                <ul class="sci">
+                    <li><i class="fab fa-google"></i></li>
+                    <li><i class="fab fa-facebook"></i></li>
+                    <li><i class="fab fa-twitter"></i></li>
+                </ul>
+            </div>
+
+        </div>
+    </section>
+
+    <script>
+		function doRegister(form) {
+			form.submit.setAttribute("disabled", "disabled");
+			form.submit.innerHTML = "<span>Loading...</span>";
+
+			var ajax = new XMLHttpRequest();
+			ajax.open("POST", "/signup", true);
+
+			ajax.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					form.submit.removeAttribute("disabled");
+					form.submit.innerHTML = "<span>Register</span>";
+
+					var response = JSON.parse(this.responseText);
+					alert(response.message);
+
+					if (response.status == "success") {
+						window.location.href = "/login";
+					}
+				}
+			};
+
+			ajax.send(new FormData(form));
+			return false;
+		}
+	</script><script>
+		function doLogin(form) {
+			form.submit.setAttribute("disabled", "disabled");
+			form.submit.innerHTML = "<span>Loading...</span>";
+
+			var ajax = new XMLHttpRequest();
+			ajax.open("POST", "/login", true);
+
+			ajax.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					form.submit.removeAttribute("disabled");
+					form.submit.innerHTML = "<span>Login</span>";
+
+					var response = JSON.parse(this.responseText);
+
+					if (response.status == "success") {
+						var accessToken = response.accessToken;
+						localStorage.setItem("accessToken", accessToken);
+						if (response.profileImage == "") {
+							window.location.href = "/updateProfile";
+						} else {
+							window.location.href = "/";
+						}
+					} else {
+						alert(response.message);
+					}
+				}
+			};
+
+			ajax.send(new FormData(form));
+			return false;
+		}
+	</script>
+    
+</body>
+</html>
